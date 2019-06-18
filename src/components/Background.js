@@ -20,13 +20,13 @@ class Background extends Component {
 
     render() {
         return (
-            <div className="Background" style={{ position: "fixed", width: "100%", zIndex: -1, top: "-10%" }}>
+            <div className="Background" style={{ position: "fixed", width: "120%", zIndex: -1, top: "-10%", left: "-10%" }}>
                 <div style={{
                     width: "100%",
                     paddingTop: "200%",
                     backgroundColor: "#282c34"
                 }} />
-                <div style={{ position: "absolute", top: "-10%", left: "-10px", filter: "blur(" + Math.min(150, Math.max(this.state.width * 0.2, 900)) + "px)", width: "100vw", overflow: "hidden", backgroundColor: "#282c34" }}>
+                <div style={{ position: "absolute", top: "-10%", left: "0px", filter: "blur(" + Math.min(150, Math.max(this.state.width * 0.2, 900)) + "px)", width: "100vw", overflow: "hidden", backgroundColor: "#282c34" }}>
                     <div style={{
                         width: "50%",
                         paddingTop: Math.max(this.state.width * 0.01, 80) + "%",

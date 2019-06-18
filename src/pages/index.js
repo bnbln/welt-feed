@@ -1,40 +1,43 @@
 import React from 'react'
-import { graphql } from 'gatsby'
 import Background from '../components/Background';
 import Home from '../components/Home';
+import { MuiThemeProvider, createMuiTheme } from "@material-ui/core/styles";
+
 import "../styles/App.css"
 
+const theme = createMuiTheme({
+  typography: {
+    useNextVariants: true,
+    fontSize: 12
+  },
+  text: {
+    primary: "#fff"
+  },
+  select: {
+    primary: "#fff"
+  },
+  root: {
+    primary: "#fff"
+  },
+  palette: {
+    primary: {
+      main: '#ffffff',
+      contrastText: '#fff'
+    },
+    secondary: {
+      main: '#000000'
+    },
+  },
+});
 
 
-const IndexPage = ({ data }) => (
-  <div>
-    <Home data={data} />
+const IndexPage = () => (
+  <MuiThemeProvider theme={theme}>
+    <Home />
     <Background colors={["#00518B", "#003a5a", "#003a5a", "#00518B"]} />
-  </div>
+  </MuiThemeProvider>
 )
 
 export default IndexPage
-
-
-export const query = graphql`
-query MyQuery {
-  welt: allFeedWelt {
-    feed: edges {
-      article: node {
-        id
-        title
-        welt {
-          topic
-          source
-        }
-        enclosure {
-          url
-        }
-        content
-      }
-    }
-  }
-}
-`
 
 

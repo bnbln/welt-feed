@@ -4,32 +4,90 @@ import Input from '@material-ui/core/Input';
 import Paper from "@material-ui/core/Paper"
 import Button from '@material-ui/core/Button';
 import CircularProgress from '@material-ui/core/CircularProgress';
+import Select from '@material-ui/core/Select';
 
 
 class Home extends Component {
   constructor(props) {
     super(props)
     this.state = {
-      scroll: null,
-      url: "",
-      fetch: "",
       isLoading: false,
       data: null,
-      query: null
+      category: "",
+      title: null
     }
-    this.post = this.post.bind(this)
+    this.fetch = this.fetch.bind(this)
+    this.xmlToJson = this.xmlToJson.bind(this)
+    this.handleChange = this.handleChange.bind(this)
 
+  }
+  componentDidMount() {
+    this.fetch()
   }
 
   
+  async fetch() {
+    this.setState({isLoading: true})
+    console.log('here')
+    const proxyurl = "https://cors-anywhere.herokuapp.com/";
+    const url = "https://www.welt.de/feeds/ooh/out-of-home/" + this.state.category;
 
-  post() {
-    console.log("posting");
-    fetch('https://api.netlify.com/build_hooks/5d08ec22acfd2ba4bc12fec6', {
-      method: 'POST',
-      body: {}
+    let request = new Request(proxyurl + url);
+
+    await fetch(request).then((results) => {
+      results
+        .text()
+        .then((str) => {
+          let responseDoc = new DOMParser().parseFromString(str, 'application/xml');
+          this.setState({
+            data: this.xmlToJson(responseDoc),
+            isLoading: false
+          })
+        })
     })
- }
+  }
+  
+  xmlToJson(xml) {
+    var obj = {};
+    if (xml.nodeType == 1) {
+      if (xml.attributes.length > 0) {
+        obj["@attributes"] = {};
+        for (var j = 0; j < xml.attributes.length; j++) {
+          var attribute = xml.attributes.item(j);
+          obj["@attributes"][attribute.nodeName] = attribute.nodeValue;
+        }
+      }
+    } else if (xml.nodeType == 3) {
+      obj = xml.nodeValue;
+    }
+    if (xml.hasChildNodes() && xml.childNodes.length === 1 && xml.childNodes[0].nodeType === 3) {
+      obj = xml.childNodes[0].nodeValue;
+    }
+    else if (xml.hasChildNodes()) {
+      for (var i = 0; i < xml.childNodes.length; i++) {
+        var item = xml.childNodes.item(i);
+        var nodeName = item.nodeName;
+        if (typeof (obj[nodeName]) == "undefined") {
+          obj[nodeName] = this.xmlToJson(item);
+        } else {
+          if (typeof (obj[nodeName].push) == "undefined") {
+            var old = obj[nodeName];
+            obj[nodeName] = [];
+            obj[nodeName].push(old);
+          }
+          obj[nodeName].push(this.xmlToJson(item));
+        }
+      }
+    }
+    return obj;
+  }
+  
+  handleChange = name => event => {
+    this.setState({
+      ...this.state,
+      [name]: event.target.value,
+    });
+  };
 
 
   render() {
@@ -51,44 +109,94 @@ class Home extends Component {
                 margin: 0
               }}
             ><span style={{ fontWeight: 300 }}>Out of Home</span><br />Instagram News</h1>
-            <Button onClick={
-              this.post
+          </Grid>
+          <Grid item xs={9} lg={3}>
+            <Select
+              color="primary"
+              autoWidth={true}
+              style={{
+                color: '#fff',
+                width: "50%",
+                marginRight: 10
+              }}
+              native
+              value={this.state.category}
+              onChange={this.handleChange('category')}
+            >
+              <option value="">Neuste</option>
+              <option value="politik">Politik</option>
+              <option value="panorama">Panorama</option>
+              <option value="wirtschaft">Wirtschaft</option>
+              <option value="sport">Sport</option>
+              <option value="kultur">Kultur</option>
+              <option value="wissen">Wissen</option>
+              <option value="auto">Auto</option>
+              <option value="karriere">Karriere</option>
+              <option value="multimedia">Digital</option>
+              <option value="reise">Reise</option>
+              <option value="test">Test</option>
+            </Select>
+            <Button color="primary" onClick={
+              this.fetch
             }>
-              Neu laden
+              Abrufen
             </Button>
           </Grid>
-          {this.props.data != null ?
-            <Grid item xs={9} style={{ color: "#003a5a" }}>
-              <Paper>
-                <Grid
-                  container
-                  direction="row"
-                  justify="center"
-                  alignItems="flex-start"
-                  spacing={3}
-                  style={{ marginTop: 40, paddingTop: 40 }} >
-                  <Grid item xs={10}>
-                    <Grid container spacing={3}>
-                      {this.props.data.welt.feed.map((item, i) =>
-                        <Grid item xs={12} md={6} lg={4} key={i}>
-                          <h3>{item.article.welt.topic}</h3>
-                          <h2 style={{ minHeight: 99 }}>{item.article.title}</h2>
-                          <img
-                            alt={item.title}
-                            src={item.article.enclosure.url}
-                            onClick={() => window.open(item.article.enclosure.url)}
-                            style={{ width: "100%", cursor: "pointer" }}
-                          />
-                          <p>{item.article.content}</p>
-                          <p>{item.article.welt.source}</p>
-                        </Grid>
-                      )}
+          {this.state.isLoading === true ?
+            <Grid item xs={12} style={{
+              textAlign: "center"
+            }}>
+              <CircularProgress />
+            </Grid>
+            : 
+            this.state.data != null ?
+              <Grid item xs={9} style={{ color: "#003a5a" }}>
+                <Paper>
+                  <Grid
+                    container
+                    direction="row"
+                    justify="center"
+                    alignItems="flex-start"
+                    spacing={3}
+                    style={{ marginTop: 40, paddingTop: 40 }} >
+                    <Grid item xs={10}>
+                      {/* <h1 style={{
+                        textTransform: "capitalize"
+                      }}>{this.state.title}</h1> */}
+                      <Grid container spacing={3}>
+                        {this.state.data.rss.channel.item.map((item, i) =>
+                          <Grid item xs={12} md={6} lg={4} key={i}>
+                            <h3>{item["welt:topic"]}</h3>
+                            <h2 style={{ minHeight: 99 }}>{item.title}</h2>
+                            {console.log(item.enclosure.length != undefined ? item.enclosure[0]["@attributes"] : item.enclosure["@attributes"].url)}
+                            {item.enclosure.length != undefined ?
+                              item.enclosure[0]["@attributes"].type === "image/jpeg" ?
+                                <img
+                                  alt={item.title}
+                                  src={item.enclosure[0]["@attributes"].url}
+                                  onClick={() => window.open(item.enclosure[0]["@attributes"].url)}
+                                  style={{ width: "100%", cursor: "pointer" }}
+                                />
+                                :
+                                null
+                              :
+                              <img
+                                alt={item.title}
+                                src={item.enclosure["@attributes"].url}
+                                onClick={() => window.open(item.enclosure["@attributes"].url)}
+                                style={{ width: "100%", cursor: "pointer" }}
+                              />
+                            }
+                            <p>{item.description}</p>
+                            <p>{item["welt:source"]}</p>
+                          </Grid>
+                        )}
+                      </Grid>
                     </Grid>
                   </Grid>
-                </Grid>
-              </Paper>
-            </Grid>
-            : null}
+                </Paper>
+              </Grid>
+              : null}
         </Grid>
 
         <header >
