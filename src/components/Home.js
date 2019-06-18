@@ -160,9 +160,9 @@ class Home extends Component {
                     spacing={3}
                     style={{ marginTop: 40, paddingTop: 40 }} >
                     <Grid item xs={10}>
-                      {/* <h1 style={{
+                      <h1 style={{
                         textTransform: "capitalize"
-                      }}>{this.state.title}</h1> */}
+                      }}>Meldungen</h1>
                       <Grid container spacing={3}>
                         {this.state.data.rss.channel.item.map((item, i) =>
                           <Grid item xs={12} md={6} lg={4} key={i}>
