@@ -5,5 +5,21 @@
  */
 
 module.exports = {
-  /* Your site config here */
+  plugins: [
+    `gatsby-plugin-sass`,
+    {
+      resolve: `gatsby-source-rss-feed`,
+      options: {
+        url: `https://www.welt.de/feeds/ooh/out-of-home`,
+        name: `WELT`,
+        // Optional
+        // Read parser document: https://github.com/bobby-brennan/rss-parser#readme
+        parserOption: {
+          customFields: {
+            item: ['welt:topic', 'welt:source'],
+          }
+        }
+      }
+    }
+  ]
 }
