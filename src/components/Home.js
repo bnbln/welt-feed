@@ -17,13 +17,19 @@ class Home extends Component {
       data: null,
       query: null
     }
-
+    this.post = this.post.bind(this)
 
   }
 
   
 
- 
+  post() {
+    console.log("posting");
+    fetch('https://api.netlify.com/build_hooks/5d08ec22acfd2ba4bc12fec6', {
+      method: 'POST',
+      body: {}
+    })
+ }
 
 
   render() {
@@ -44,7 +50,12 @@ class Home extends Component {
                 fontSize: 60,
                 margin: 0
               }}
-            ><span style={{ fontWeight: 300 }}>Out of Home</span><br/>Instagram News</h1>
+            ><span style={{ fontWeight: 300 }}>Out of Home</span><br />Instagram News</h1>
+            <Button onClick={
+              this.post
+            }>
+              Neu laden
+            </Button>
           </Grid>
           {this.props.data != null ?
             <Grid item xs={9} style={{ color: "#003a5a" }}>
