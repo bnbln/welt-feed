@@ -5,8 +5,6 @@ import Button from '@material-ui/core/Button';
 import CircularProgress from '@material-ui/core/CircularProgress';
 import Select from '@material-ui/core/Select';
 import Input from '@material-ui/core/Input';
-
-import PropTypes from 'prop-types';
 import { withStyles } from '@material-ui/styles';
 
 const StyledSelect = withStyles({
