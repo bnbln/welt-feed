@@ -1,5 +1,4 @@
 import React from 'react'
-import Background from '../components/Background';
 import Home from '../components/Home';
 import { MuiThemeProvider, createMuiTheme } from "@material-ui/core/styles";
 
@@ -34,7 +33,6 @@ const theme = createMuiTheme({
 const IndexPage = () => (
   <MuiThemeProvider theme={theme}>
     <Home />
-    <Background colors={["#00518B", "#003a5a", "#003a5a", "#00518B"]} />
   </MuiThemeProvider>
 )
 

@@ -1,10 +1,38 @@
 import React, { Component } from 'react';
 import Grid from "@material-ui/core/Grid"
-import Input from '@material-ui/core/Input';
 import Paper from "@material-ui/core/Paper"
 import Button from '@material-ui/core/Button';
 import CircularProgress from '@material-ui/core/CircularProgress';
 import Select from '@material-ui/core/Select';
+import Input from '@material-ui/core/Input';
+
+import PropTypes from 'prop-types';
+import { withStyles } from '@material-ui/styles';
+
+const StyledSelect = withStyles({
+  icon: {
+    color: "white"
+  },
+  root: {
+    borderBottomColor: "white",
+    color: '#fff',
+    width: "200px",
+    marginRight: 10,
+    "& :before": {
+      borderBottomColor: "white",
+    }
+
+  },
+})(Select);
+
+const StyledInput = withStyles({
+  underline: {
+    "& :after": {
+      borderBottomColor: "orange"
+    }
+  }
+})(Input);
+
 
 
 class Home extends Component {
@@ -21,14 +49,9 @@ class Home extends Component {
     this.handleChange = this.handleChange.bind(this)
 
   }
-  componentDidMount() {
-    this.fetch()
-  }
-
   
   async fetch() {
     this.setState({isLoading: true})
-    console.log('here')
     const proxyurl = "https://cors-anywhere.herokuapp.com/";
     const url = "https://www.welt.de/feeds/ooh/out-of-home/" + this.state.category;
 
@@ -49,7 +72,7 @@ class Home extends Component {
   
   xmlToJson(xml) {
     var obj = {};
-    if (xml.nodeType == 1) {
+    if (xml.nodeType === 1) {
       if (xml.attributes.length > 0) {
         obj["@attributes"] = {};
         for (var j = 0; j < xml.attributes.length; j++) {
@@ -57,7 +80,7 @@ class Home extends Component {
           obj["@attributes"][attribute.nodeName] = attribute.nodeValue;
         }
       }
-    } else if (xml.nodeType == 3) {
+    } else if (xml.nodeType === 3) {
       obj = xml.nodeValue;
     }
     if (xml.hasChildNodes() && xml.childNodes.length === 1 && xml.childNodes[0].nodeType === 3) {
@@ -67,10 +90,10 @@ class Home extends Component {
       for (var i = 0; i < xml.childNodes.length; i++) {
         var item = xml.childNodes.item(i);
         var nodeName = item.nodeName;
-        if (typeof (obj[nodeName]) == "undefined") {
+        if (typeof (obj[nodeName]) === "undefined") {
           obj[nodeName] = this.xmlToJson(item);
         } else {
-          if (typeof (obj[nodeName].push) == "undefined") {
+          if (typeof (obj[nodeName].push) === "undefined") {
             var old = obj[nodeName];
             obj[nodeName] = [];
             obj[nodeName].push(old);
@@ -91,6 +114,8 @@ class Home extends Component {
 
 
   render() {
+    //  "ci23x11-w1024" "ci2x3l-w1024" "ci102l-w1024" "ci16x9-w1024"
+    var imagesize = "ci23x11-w1024";
     return (
       <div className="App" style={{ color: "white", overflow: "hidden" }}>
         <Grid
@@ -100,7 +125,7 @@ class Home extends Component {
           alignItems="center"
           spacing={3}
           style={{ padding: "50px 0px 50px 0px", minHeight: "100vh" }} >
-          <Grid item xs={9} lg={4}>
+          <Grid item xs={11} lg={4}>
             <h1
               style={{
                 fontWeight: 900,
@@ -110,15 +135,11 @@ class Home extends Component {
               }}
             ><span style={{ fontWeight: 300 }}>Out of Home</span><br />Instagram News</h1>
           </Grid>
-          <Grid item xs={9} lg={3}>
-            <Select
+          <Grid item xs={11} lg={3}>
+            <StyledSelect
               color="primary"
+              input={<StyledInput value={this.state.category} />}
               autoWidth={true}
-              style={{
-                color: '#fff',
-                width: "50%",
-                marginRight: 10
-              }}
               native
               value={this.state.category}
               onChange={this.handleChange('category')}
@@ -135,7 +156,7 @@ class Home extends Component {
               <option value="multimedia">Digital</option>
               <option value="reise">Reise</option>
               <option value="test">Test</option>
-            </Select>
+            </StyledSelect>
             <Button color="primary" onClick={
               this.fetch
             }>
@@ -149,8 +170,8 @@ class Home extends Component {
               <CircularProgress />
             </Grid>
             : 
-            this.state.data != null ?
-              <Grid item xs={9} style={{ color: "#003a5a" }}>
+            this.state.data !== null ?
+              <Grid item xs={11} lg={9} style={{ color: "#003a5a" }}>
                 <Paper>
                   <Grid
                     container
@@ -168,13 +189,15 @@ class Home extends Component {
                           <Grid item xs={12} md={6} lg={4} key={i}>
                             <h3>{item["welt:topic"]}</h3>
                             <h2 style={{ minHeight: 99 }}>{item.title}</h2>
-                            {console.log(item.enclosure.length != undefined ? item.enclosure[0]["@attributes"] : item.enclosure["@attributes"].url)}
-                            {item.enclosure.length != undefined ?
+                            {console.log(item.enclosure.length !== undefined ?
+                              item.enclosure[0]["@attributes"]
+                              : item.enclosure["@attributes"].url)}
+                            {item.enclosure.length !== undefined ?
                               item.enclosure[0]["@attributes"].type === "image/jpeg" ?
                                 <img
                                   alt={item.title}
-                                  src={item.enclosure[0]["@attributes"].url}
-                                  onClick={() => window.open(item.enclosure[0]["@attributes"].url)}
+                                  src={item.enclosure[0]["@attributes"].url.replace("ci23x11-w780", imagesize)}
+                                  onClick={() => window.open(item.enclosure[0]["@attributes"].url.replace("ci23x11-w780", imagesize))}
                                   style={{ width: "100%", cursor: "pointer" }}
                                 />
                                 :
@@ -182,8 +205,8 @@ class Home extends Component {
                               :
                               <img
                                 alt={item.title}
-                                src={item.enclosure["@attributes"].url}
-                                onClick={() => window.open(item.enclosure["@attributes"].url)}
+                                src={item.enclosure["@attributes"].url.replace("ci23x11-w780", imagesize)}
+                                onClick={() => window.open(item.enclosure["@attributes"].url.replace("ci23x11-w780", imagesize))}
                                 style={{ width: "100%", cursor: "pointer" }}
                               />
                             }
