@@ -1,12 +1,10 @@
-import React, { Component } from 'react';
+import React, { Component, useState, useEffect } from 'react';
 import Grid from "@material-ui/core/Grid"
 import Paper from "@material-ui/core/Paper"
 import Button from '@material-ui/core/Button';
 import CircularProgress from '@material-ui/core/CircularProgress';
 import Select from '@material-ui/core/Select';
 import Input from '@material-ui/core/Input';
-
-import PropTypes from 'prop-types';
 import { withStyles } from '@material-ui/styles';
 
 const StyledSelect = withStyles({
@@ -34,7 +32,6 @@ const StyledInput = withStyles({
 })(Input);
 
 
-
 class Home extends Component {
   constructor(props) {
     super(props)
@@ -49,7 +46,7 @@ class Home extends Component {
     this.handleChange = this.handleChange.bind(this)
 
   }
-  
+
   async fetch() {
     this.setState({isLoading: true})
     const proxyurl = "https://cors-anywhere.herokuapp.com/";
@@ -69,7 +66,7 @@ class Home extends Component {
         })
     })
   }
-  
+
   xmlToJson(xml) {
     var obj = {};
     if (xml.nodeType === 1) {
@@ -104,7 +101,7 @@ class Home extends Component {
     }
     return obj;
   }
-  
+
   handleChange = name => event => {
     this.setState({
       ...this.state,
@@ -115,7 +112,8 @@ class Home extends Component {
 
   render() {
     //  "ci23x11-w1024" "ci2x3l-w1024" "ci102l-w1024" "ci16x9-w1024"
-    var imagesize = "ci23x11-w1024";
+    // var imagesize = "ci23x11-w1024";
+    var imagesize = "ci23x11-w780";
     return (
       <div className="App" style={{ color: "white", overflow: "hidden" }}>
         <Grid
@@ -169,7 +167,7 @@ class Home extends Component {
             }}>
               <CircularProgress />
             </Grid>
-            : 
+            :
             this.state.data !== null ?
               <Grid item xs={11} lg={9} style={{ color: "#003a5a" }}>
                 <Paper>
