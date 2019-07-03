@@ -187,11 +187,9 @@ class Home extends Component {
                           <Grid item xs={12} md={6} lg={4} key={i}>
                             <h3>{item["welt:topic"]}</h3>
                             <h2 style={{ minHeight: 99 }}>{item.title}</h2>
-                            {console.log(item.enclosure.length !== undefined ?
-                              item.enclosure[0]["@attributes"]
-                              : item.enclosure["@attributes"].url)}
-                            {item.enclosure.length !== undefined ?
-                              item.enclosure[0]["@attributes"].type === "image/jpeg" ?
+                            {item.enclosure ?
+                              item.enclosure.length !== undefined && item.enclosure.length !== 0 && item.enclosure.length !== null ?
+                               item.enclosure[0]["@attributes"].type === "image/jpeg" ?
                                 <img
                                   alt={item.title}
                                   src={item.enclosure[0]["@attributes"].url.replace("ci23x11-w780", imagesize)}
@@ -206,7 +204,25 @@ class Home extends Component {
                                 src={item.enclosure["@attributes"].url.replace("ci23x11-w780", imagesize)}
                                 onClick={() => window.open(item.enclosure["@attributes"].url.replace("ci23x11-w780", imagesize))}
                                 style={{ width: "100%", cursor: "pointer" }}
-                              />
+                                />
+                              : 
+                              <div style={{
+                                width: "100%",
+                                paddingTop: "48%",
+                                background: "#b71336",
+                                color: "#fff",
+                                position: "relative"
+                              }}>
+                                <p style={{
+                                  position: "absolute",
+                                  top: "33%",
+                                  left: 0,
+                                  width: "100%",
+                                  textAlign: "center",
+                                  fontWeight: 800
+                                }}>HD-Bild oder kein Bild</p>
+                              </div>
+              
                             }
                             <p>{item.description}</p>
                             <p>{item["welt:source"]}</p>
