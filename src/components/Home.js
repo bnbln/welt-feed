@@ -5,6 +5,10 @@ import Button from '@material-ui/core/Button';
 import CircularProgress from '@material-ui/core/CircularProgress';
 import Select from '@material-ui/core/Select';
 import Input from '@material-ui/core/Input';
+import ButtonGroup from '@material-ui/core/ButtonGroup';
+
+import Tabs from '@material-ui/core/Tabs';
+import Tab from '@material-ui/core/Tab';
 import { withStyles } from '@material-ui/styles';
 
 const StyledSelect = withStyles({
@@ -39,11 +43,14 @@ class Home extends Component {
       isLoading: false,
       data: null,
       category: "",
-      title: null
+      title: null,
+      imageSize: "1080",
+      imageCrop: "23x11"
     }
     this.fetch = this.fetch.bind(this)
     this.xmlToJson = this.xmlToJson.bind(this)
     this.handleChange = this.handleChange.bind(this)
+    this.handleButton = this.handleButton.bind(this)
 
   }
 
@@ -109,11 +116,17 @@ class Home extends Component {
     });
   };
 
+  handleButton(name, props) {
+    this.setState({
+      [name]: props
+    })
+  }
+
 
   render() {
     //  "ci23x11-w1024" "ci2x3l-w1024" "ci102l-w1024" "ci16x9-w1024"
-    // var imagesize = "ci23x11-w1024";
-    var imagesize = "ci23x11-w780";
+    var imagesize = "ci"+this.state.imageCrop+"-w"+this.state.imageSize;
+    // var imagesize = "ci23x11-w780";
     return (
       <div className="App" style={{ color: "white", overflow: "hidden" }}>
         <Grid
@@ -142,18 +155,19 @@ class Home extends Component {
               value={this.state.category}
               onChange={this.handleChange('category')}
             >
-              <option value="">Neuste</option>
-              <option value="politik">Politik</option>
-              <option value="panorama">Panorama</option>
-              <option value="wirtschaft">Wirtschaft</option>
-              <option value="sport">Sport</option>
-              <option value="kultur">Kultur</option>
-              <option value="wissen">Wissen</option>
-              <option value="auto">Auto</option>
-              <option value="karriere">Karriere</option>
-              <option value="multimedia">Digital</option>
-              <option value="reise">Reise</option>
-              <option value="test">Test</option>
+              <option style={{backgroundColor: "gray"}} value="">Neuste</option>
+              <option style={{backgroundColor: "gray"}} value="politik">Politik</option>
+              <option style={{backgroundColor: "gray"}} value="panorama">Panorama</option>
+              <option style={{backgroundColor: "gray"}} value="wirtschaft">Wirtschaft</option>
+              <option style={{backgroundColor: "gray"}} value="sport">Sport</option>
+              <option style={{backgroundColor: "gray"}} value="leute">Leute</option>
+              <option style={{backgroundColor: "gray"}} value="kultur">Kultur</option>
+              <option style={{backgroundColor: "gray"}} value="wissen">Wissen</option>
+              <option style={{backgroundColor: "gray"}} value="auto">Auto</option>
+              <option style={{backgroundColor: "gray"}} value="karriere">Karriere</option>
+              <option style={{backgroundColor: "gray"}} value="multimedia">Digital</option>
+              <option style={{backgroundColor: "gray"}} value="reise">Reise</option>
+              <option style={{backgroundColor: "gray"}} value="test">Test</option>
             </StyledSelect>
             <Button color="primary" onClick={
               this.fetch
@@ -182,6 +196,67 @@ class Home extends Component {
                       <h1 style={{
                         textTransform: "capitalize"
                       }}>Meldungen</h1>
+                   
+                      <Grid container spacing={3}>
+                        <Grid item xs={12} md={4}>
+                          <p><b>Bildgröße</b></p>
+                          {/* <Tabs
+                          value={this.state.imageSize}
+                          onChange={this.handleChange}
+                          indicatorColor="primary"
+                          textColor="primary"
+                          variant="fullWidth"
+                          aria-label="action tabs example"
+                        >
+                          <Tab label="Klein" value="small" />
+                          <Tab label="Groß" value="large" />
+                        </Tabs> */}
+
+                          <Button onClick={() => this.handleButton("imageSize", "780")} variant={this.state.imageSize === "780" ? "contained" : "outlined"}>
+                            klein
+                        </Button>
+                          <Button onClick={() => this.handleButton("imageSize", "1080")} variant={this.state.imageSize === "1080" ? "contained" : "outlined"}>
+                            groß
+                        </Button>
+                        </Grid>
+                        <Grid item xs={12} md={8}>
+                          <p><b>Bildausschnitt</b></p>
+
+                          <Button onClick={() => this.handleButton("imageCrop", "23x11")}
+                            variant={this.state.imageCrop === "23x11" ? "contained" : "outlined"}
+                          >
+                            23:11
+                        </Button>
+                          <Button onClick={() => this.handleButton("imageCrop", "16x9")}
+                            variant={this.state.imageCrop === "16x9" ? "contained" : "outlined"}
+                          >
+                            16:9
+                        </Button>
+                          <Button onClick={() => this.handleButton("imageCrop", "1x2l")}
+                            variant={this.state.imageCrop === "1x2l" ? "contained" : "outlined"}
+                          >
+                            1:2
+                        </Button>
+                          <Button onClick={() => this.handleButton("imageCrop", "2x3l")}
+                            variant={this.state.imageCrop === "2x3l" ? "contained" : "outlined"}
+
+                          >
+                            2:3
+                        </Button>
+                          <Button onClick={() => this.handleButton("imageCrop", "192x251l")}
+                            variant={this.state.imageCrop === "192x251l" ? "contained" : "outlined"}
+
+                          >
+                            192:251
+                        </Button>
+                          <Button onClick={() => this.handleButton("imageCrop", "102l")}
+                            variant={this.state.imageCrop === "102l" ? "contained" : "outlined"}
+
+                          >
+                            1:1
+                        </Button>
+                        </Grid>
+                      </Grid>
                       <Grid container spacing={3}>
                         {this.state.data.rss.channel.item.map((item, i) =>
                           <Grid item xs={12} md={6} lg={4} key={i}>
