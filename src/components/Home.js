@@ -160,6 +160,7 @@ class Home extends Component {
               <option style={{backgroundColor: "gray"}} value="panorama">Panorama</option>
               <option style={{backgroundColor: "gray"}} value="wirtschaft">Wirtschaft</option>
               <option style={{backgroundColor: "gray"}} value="sport">Sport</option>
+              <option style={{backgroundColor: "gray"}} value="em2020">EM 2020</option>
               <option style={{backgroundColor: "gray"}} value="leute">Leute</option>
               <option style={{backgroundColor: "gray"}} value="kultur">Kultur</option>
               <option style={{backgroundColor: "gray"}} value="wissen">Wissen</option>
